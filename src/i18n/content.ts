@@ -17,9 +17,8 @@ export const HTML_LANG: Record<Lang, string> = { ja: 'ja', en: 'en', ru: 'ru' };
    Facts on this site come from company documents. Counterparties are
    described by sector and size, never by name.
 
-   TODO before launch — placeholders marked ⚠ must be replaced:
-     · contact.email  ⚠ business address not yet supplied
-     · company.founded / capital / employees  ⚠ not in the source documents
+   Still missing (absent from the source documents, so stated nowhere):
+     · founding date, capital, headcount
    The registered office and the founder's record below are taken from
    the export agreement and the partnership presentation and are real.
    ------------------------------------------------------------------ */
@@ -30,7 +29,7 @@ export const company = {
   addressJa: '〒106-0032 東京都港区六本木3-16-12 六本木KSビル5F',
   addressEn: '5F Roppongi KS Bldg., 3-16-12 Roppongi, Minato-ku, Tokyo 106-0032, Japan',
   addressRu: 'Япония, Токио, Минато-ку, Роппонги 3-16-12, Roppongi KS Bldg. 5F, 106-0032',
-  email: 'info@olimov-inc.jp', // ⚠ placeholder
+  email: 'Olimov.jp@outlook.com',
 };
 
 export const content = {
