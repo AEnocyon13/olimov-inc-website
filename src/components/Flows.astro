@@ -1,0 +1,138 @@
+---
+import { t, type Lang } from '../i18n/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<section id="flows" class="section flows">
+  <div class="wrap">
+    <div class="marker rv">
+      <span class="marker__dot"></span>
+      <span class="micro">{d.flows.label}</span>
+      <span class="marker__line"></span>
+      <span class="micro tnum">{d.flows.items.length.toString().padStart(2, '0')}</span>
+    </div>
+
+    <div class="sec__head">
+      <h2 class="sec__title rvl"><span class="line"><span>{d.flows.title}</span></span></h2>
+      <p class="lead rv" data-d="1">{d.flows.lead}</p>
+    </div>
+
+    <ol class="rows">
+      {d.flows.items.map((f) => (
+        <li class="flow rv" data-dir={f.dir}>
+          <div class="flow__top">
+            <span class="micro flow__code">{f.code}</span>
+            <h3 class="flow__name">{f.name}</h3>
+            <p class="micro flow__route">
+              <span>{f.from}</span>
+              <span class="flow__glyph" aria-hidden="true">
+                {f.dir === 'fwd' ? '→' : f.dir === 'rev' ? '←' : '⇄'}
+              </span>
+              <span>{f.to}</span>
+            </p>
+          </div>
+
+          <div class="bar" aria-hidden="true"><span class="bar__fill"></span></div>
+
+          <div class="flow__body">
+            <ul class="chips">
+              {f.items.map((i) => <li class="micro">{i}</li>)}
+            </ul>
+            <p class="flow__note">{f.note}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <p class="micro flows__note rv">{d.flows.note}</p>
+  </div>
+</section>
+
+<style>
+  .flows { overflow: hidden; }
+  .sec__head { display: grid; gap: var(--sp-3) var(--sp-6); margin-bottom: clamp(3rem, 7vw, 5.5rem); }
+  @media (min-width: 900px) {
+    .sec__head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; }
+  }
+  .sec__title { font-size: var(--fs-xl); }
+
+  .rows { border-top: 1px solid var(--rule); }
+  .flow { padding-block: clamp(2rem, 4.5vw, 3.25rem); border-bottom: 1px solid var(--rule); }
+
+  .flow__top {
+    display: grid; align-items: baseline; gap: 0.4rem 1.1rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    margin-bottom: clamp(1.25rem, 2.6vw, 1.75rem);
+  }
+  .flow__code { color: var(--accent-ink); }
+  .flow__name { font-size: var(--fs-l); letter-spacing: -0.025em; }
+  .flow__route {
+    display: flex; align-items: center; gap: 0.6rem; white-space: nowrap;
+    color: var(--ink-3); justify-self: end;
+  }
+  .flow__glyph { color: var(--accent-ink); font-size: 1rem; line-height: 1; }
+  @media (max-width: 639px) {
+    .flow__top { grid-template-columns: auto minmax(0, 1fr); }
+    .flow__route { grid-column: 1 / -1; justify-self: start; }
+  }
+
+  /* The direction of travel, drawn. Outbound fills from the left,
+     inbound from the right, both-ways from the centre. */
+  .bar { position: relative; height: 2px; background: var(--rule); margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+  .bar__fill {
+    position: absolute; inset: 0; background: var(--ink);
+    transform: scaleX(0);
+    transition: transform 1200ms var(--ease-io) 120ms;
+  }
+  /* A single accent square marks the end the traffic arrives at. */
+  .bar::after {
+    content: ''; position: absolute; top: -2px; width: 6px; height: 6px;
+    background: var(--accent);
+    opacity: 0; transition: opacity 300ms var(--ease-out) 900ms;
+  }
+  [data-dir='fwd']  .bar__fill { transform-origin: left; }
+  [data-dir='fwd']  .bar::after { right: 0; }
+  [data-dir='rev']  .bar__fill { transform-origin: right; }
+  [data-dir='rev']  .bar::after { left: 0; }
+  [data-dir='both'] .bar__fill { transform-origin: center; }
+  [data-dir='both'] .bar::after { left: calc(50% - 3px); }
+  .flow.is-in .bar__fill { transform: scaleX(1); }
+  .flow.is-in .bar::after { opacity: 1; }
+
+  @keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes tip-show { from { opacity: 0; } to { opacity: 1; } }
+  @supports (animation-timeline: view()) {
+    :global(.sda) .bar__fill {
+      transform: none; transition: none;
+      animation: bar-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 20% entry 92%;
+    }
+    :global(.sda) .bar::after {
+      opacity: 1; transition: none;
+      animation: tip-show linear both;
+      animation-timeline: view();
+      animation-range: entry 70% entry 95%;
+    }
+  }
+
+  .flow__body { display: grid; gap: var(--sp-2) var(--sp-5); }
+  @media (min-width: 900px) { .flow__body { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); } }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; align-content: start; }
+  .chips li {
+    padding: 0.5rem 0.85rem;
+    box-shadow: inset 0 0 0 1px var(--rule);
+    color: var(--ink); line-height: 1.2;
+    text-transform: none; letter-spacing: 0.02em;
+    font-family: var(--body); font-size: 0.8125rem;
+  }
+  .flow__note { color: var(--ink-3); font-size: 0.9375rem; }
+  .flows__note { margin-top: var(--sp-4); color: var(--ink-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar__fill { transform: scaleX(1) !important; transition: none !important; animation: none !important; }
+    .bar::after { opacity: 1 !important; transition: none !important; animation: none !important; }
+  }
+</style>

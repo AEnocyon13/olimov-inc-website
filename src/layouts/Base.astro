@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import { t, HREF, HTML_LANG, LANGS, asset, type Lang } from '../i18n/content';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const site = Astro.site ?? new URL('https://olimov-inc.example');
+---
+<!doctype html>
+<html lang={HTML_LANG[lang]} class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{d.meta.title}</title>
+  <meta name="description" content={d.meta.description} />
+  <meta name="theme-color" content="#F2F1ED" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+  <link rel="canonical" href={new URL(HREF[lang], site).href} />
+  {LANGS.map((l) => (
+    <link rel="alternate" hreflang={l} href={new URL(HREF[l], site).href} />
+  ))}
+  <link rel="alternate" hreflang="x-default" href={new URL(HREF.ja, site).href} />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={d.meta.title} />
+  <meta property="og:description" content={d.meta.description} />
+  <meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : lang === 'ru' ? 'ru_RU' : 'en_US'} />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400..900&family=Zen+Kaku+Gothic+New:wght@400;500;900&family=JetBrains+Mono:wght@500&display=swap"
+  />
+
+  <!-- Pick the animation strategy before first paint so nothing flashes. -->
+  <script is:inline>
+    (function () {
+      var r = document.documentElement;
+      r.classList.remove('no-js');
+      try {
+        if (window.CSS && CSS.supports('animation-timeline: view()')) r.classList.add('sda');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">{d.skip}</a>
+  <Nav lang={lang} />
+  <main id="main"><slot /></main>
+  <Footer lang={lang} />
+
+  <script is:inline>
+    // Fallback reveal. Only runs where scroll-driven animations are missing.
+    (function () {
+      var r = document.documentElement;
+      if (r.classList.contains('sda')) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var targets = document.querySelectorAll('.rv, .rvl');
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+      targets.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

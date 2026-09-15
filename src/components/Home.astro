@@ -1,0 +1,22 @@
+---
+import type { Lang } from '../i18n/content';
+import Hero from './Hero.astro';
+import Ticker from './Ticker.astro';
+import Services from './Services.astro';
+import Flows from './Flows.astro';
+import Cases from './Cases.astro';
+import Founder from './Founder.astro';
+import Trust from './Trust.astro';
+import Contact from './Contact.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<Hero lang={lang} />
+<Ticker lang={lang} />
+<Services lang={lang} />
+<Flows lang={lang} />
+<Cases lang={lang} />
+<Founder lang={lang} />
+<Trust lang={lang} />
+<Contact lang={lang} />

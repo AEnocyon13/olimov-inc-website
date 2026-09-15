@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# Unrelated project that happens to sit in this directory (LiftLog).
+# It is not part of the corporate site and must not be published here.
+workout-app/

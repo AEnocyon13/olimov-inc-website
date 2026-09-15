@@ -1,0 +1,109 @@
+---
+import { t, company, addressOf, type Lang } from '../i18n/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const offset = (tz: string) => Number(tz.replace('UTC', '')) || 0;
+---
+<section id="contact" class="section contact">
+  <div class="wrap">
+    <div class="marker rv">
+      <span class="marker__dot"></span>
+      <span class="micro">{d.contact.label}</span>
+      <span class="marker__line"></span>
+    </div>
+
+    <div class="contact__grid">
+      <div>
+        <h2 class="contact__title rvl">
+          <span class="line"><span>{d.contact.title}</span></span>
+        </h2>
+        <p class="lead rv" data-d="1">{d.contact.lead}</p>
+        <div class="contact__act rv" data-d="2">
+          <a class="btn" href={`mailto:${company.email}`}>
+            {d.contact.emailLabel}
+            <svg class="btn__arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M1 7.5h12M8 2.5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a class="ulink contact__mail" href={`mailto:${company.email}`}>{company.email}</a>
+        </div>
+      </div>
+
+      <div class="side rv" data-d="3">
+        <div class="side__block">
+          <p class="micro side__label">{d.contact.officeLabel}</p>
+          <address class="side__addr">{addressOf(lang)}</address>
+        </div>
+
+        <div class="side__block">
+          <p class="micro side__label">{d.contact.hoursLabel}</p>
+          <ul class="zones">
+            {d.contact.zones.map((z) => (
+              <li class="zone" data-utc={offset(z.tz)}>
+                <div class="zone__head">
+                  <h3 class="zone__city">{z.city}</h3>
+                  <time class="zone__clock micro tnum" data-clock>{z.tz}</time>
+                </div>
+                <p class="micro zone__role">{z.country} · {z.role}</p>
+              </li>
+            ))}
+          </ul>
+          <p class="zone__note">{d.contact.hoursNote}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // Local time on both sides of the desk. Static UTC offsets are enough:
+  // neither Tokyo nor Tashkent observes DST. Falls back to "UTC+n".
+  (function () {
+    var nodes = document.querySelectorAll('.zone[data-utc]');
+    if (!nodes.length) return;
+    function tick() {
+      var now = Date.now();
+      nodes.forEach(function (el) {
+        var off = Number(el.getAttribute('data-utc'));
+        var d = new Date(now + off * 3600000);
+        var h = String(d.getUTCHours()).padStart(2, '0');
+        var m = String(d.getUTCMinutes()).padStart(2, '0');
+        var out = el.querySelector('[data-clock]');
+        if (out) { out.textContent = h + ':' + m; out.setAttribute('datetime', h + ':' + m); }
+      });
+    }
+    tick();
+    setInterval(tick, 20000);
+  })();
+</script>
+
+<style>
+  .contact { padding-bottom: clamp(4rem, 8vw, 7rem); }
+  .contact__grid { display: grid; gap: var(--sp-6) var(--sp-7); }
+  @media (min-width: 980px) {
+    .contact__grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  }
+  .contact__title { font-size: var(--fs-xl); margin-bottom: var(--sp-3); max-width: 16ch; }
+  .contact__act {
+    display: flex; align-items: center; gap: var(--sp-3) var(--sp-4);
+    flex-wrap: wrap; margin-top: var(--sp-4);
+  }
+  .contact__mail { font-family: var(--mono); font-size: 0.8125rem; color: var(--ink-3); letter-spacing: 0.02em; }
+
+  .side { display: grid; gap: var(--sp-5); align-content: start; }
+  .side__label { color: var(--ink-3); margin-bottom: 0.9rem; }
+  .side__addr {
+    font-style: normal; font-size: 0.9375rem; line-height: 1.75;
+    padding-top: 0.9rem; border-top: 1px solid var(--rule);
+    max-width: 34ch;
+  }
+
+  .zones { border-top: 1px solid var(--rule); }
+  .zone { padding-block: clamp(0.9rem, 1.8vw, 1.25rem); border-bottom: 1px solid var(--rule); }
+  .zone__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+  .zone__city { font-size: var(--fs-m); letter-spacing: -0.02em; }
+  .zone__clock { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+  .zone__role { color: var(--ink-3); margin-top: 0.4rem; }
+  .zone__note { color: var(--ink-3); font-size: 0.875rem; margin-top: var(--sp-2); max-width: 40ch; }
+</style>

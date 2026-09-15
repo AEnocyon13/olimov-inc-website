@@ -1,0 +1,145 @@
+---
+import { t, type Lang } from '../i18n/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<section id="work" class="section work">
+  <div class="wrap">
+    <div class="marker rv">
+      <span class="marker__dot"></span>
+      <span class="micro">{d.work.label}</span>
+      <span class="marker__line"></span>
+      <span class="micro tnum">{d.work.cases.length.toString().padStart(2, '0')}</span>
+    </div>
+
+    <div class="sec__head">
+      <h2 class="work__title rvl"><span class="line"><span>{d.work.title}</span></span></h2>
+      <p class="lead rv" data-d="1">{d.work.lead}</p>
+    </div>
+
+    <ol class="cases">
+      {d.work.cases.map((c, i) => (
+        <li class="case" style={`--i:${i}`}>
+          <article class="card">
+            <header class="card__head">
+              <span class="card__no micro tnum">{c.no}</span>
+              <span class="card__meta micro">{c.year}</span>
+              <span class="card__meta micro card__place">{c.place}</span>
+            </header>
+
+            <div class="card__body">
+              <div class="card__text">
+                <h3 class="card__title">{c.title}</h3>
+                <p class="card__p">{c.body}</p>
+              </div>
+
+              <div class="spec">
+                <p class="spec__client">{c.client}</p>
+                <dl class="spec__list">
+                  {c.facts.map((f) => (
+                    <div class="spec__row">
+                      <dt class="micro">{f.k}</dt>
+                      <dd>{f.v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .sec__head { display: grid; gap: var(--sp-3) var(--sp-6); margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+  @media (min-width: 900px) {
+    .sec__head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; }
+  }
+  .work__title { font-size: var(--fs-xl); }
+
+  /* Stacking deck: each case pins under the one before it, offset by a
+     hairline of its predecessor so the pile stays legible. */
+  .cases { display: grid; gap: clamp(1.25rem, 2.5vw, 2.25rem); }
+  .case { position: sticky; top: calc(5.5rem + var(--i) * 1.1rem); min-width: 0; }
+
+  .card {
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    padding: clamp(1.5rem, 3.6vw, 3.25rem);
+    transform-origin: 50% 0;
+  }
+
+  /* As a card is covered, let it settle back a step. */
+  @keyframes recede { to { transform: scale(0.955); opacity: 0.55; } }
+  @supports (animation-timeline: view()) {
+    :global(.sda) .card {
+      animation: recede linear both;
+      animation-timeline: view();
+      animation-range: exit -18% exit 46%;
+    }
+  }
+
+  .card__head {
+    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+    padding-bottom: clamp(1.25rem, 2.4vw, 2rem);
+    border-bottom: 1px solid var(--rule-soft);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .card__no {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.15rem; height: 2.15rem; background: var(--ink); color: var(--paper);
+  }
+  .card__meta { color: var(--ink-3); }
+  .card__place { margin-left: auto; }
+
+  .card__body { display: grid; gap: var(--sp-4) var(--sp-6); }
+  .card__body > *, .card__text { min-width: 0; }
+  @media (min-width: 960px) {
+    .card__body { grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); }
+  }
+  .card__title {
+    font-size: var(--fs-l); line-height: 1.2; letter-spacing: -0.025em;
+    margin-bottom: var(--sp-2); max-width: 22ch;
+  }
+  .card__p { color: var(--ink-2); max-width: 56ch; }
+
+  /* A spec sheet, not a headline number: every value here is a term that
+     was actually fixed in the agreement. */
+  .spec { align-self: start; }
+  @media (min-width: 960px) { .spec { border-left: 1px solid var(--rule); padding-left: var(--sp-4); } }
+  @media (max-width: 959px) { .spec { border-top: 2px solid var(--ink); padding-top: 1.1rem; } }
+
+  .spec__client {
+    position: relative;
+    font-size: 0.875rem; line-height: 1.65; color: var(--ink-2);
+    padding: 0.85rem 0 1rem; margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .spec__client::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 18px; height: 2px; background: var(--accent);
+  }
+  .spec__row {
+    display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+    gap: 0.5rem 1rem; align-items: baseline;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .spec__row:last-child { border-bottom: 0; }
+  .spec__row dt { color: var(--ink-3); padding-top: 0.15em; }
+  .spec__row dd {
+    margin: 0; font-family: var(--display); font-weight: 500;
+    font-size: 0.9375rem; letter-spacing: -0.015em; line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+  :lang(ja) .spec__row dd { font-family: var(--body); font-weight: 500; }
+  @media (max-width: 419px) { .spec__row { grid-template-columns: minmax(0, 1fr); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case { position: static; }
+    .card { animation: none !important; transform: none !important; opacity: 1 !important; }
+  }
+</style>

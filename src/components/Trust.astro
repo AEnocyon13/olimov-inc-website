@@ -1,0 +1,53 @@
+---
+import { t, type Lang } from '../i18n/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+---
+<section id="trust" class="section wrap">
+  <div class="marker rv">
+    <span class="marker__dot"></span>
+    <span class="micro">{d.trust.label}</span>
+    <span class="marker__line"></span>
+    <span class="micro tnum">{d.trust.items.length.toString().padStart(2, '0')}</span>
+  </div>
+
+  <div class="sec__head">
+    <h2 class="sec__title rvl"><span class="line"><span>{d.trust.title}</span></span></h2>
+    <p class="lead rv" data-d="1">{d.trust.lead}</p>
+  </div>
+
+  <ul class="tiles">
+    {d.trust.items.map((it, i) => (
+      <li class="tile rv" data-d={String(Math.min(i + 1, 5))}>
+        <span class="tile__no micro tnum">{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="tile__t">{it.title}</h3>
+        <p class="tile__b">{it.body}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .sec__head { display: grid; gap: var(--sp-3) var(--sp-6); margin-bottom: clamp(3rem, 7vw, 5rem); }
+  @media (min-width: 900px) {
+    .sec__head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; }
+  }
+  .sec__title { font-size: var(--fs-xl); }
+
+  .tiles { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  @media (min-width: 700px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1150px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+
+  .tile {
+    background: var(--surface);
+    padding: clamp(1.5rem, 2.8vw, 2.25rem);
+    display: flex; flex-direction: column; gap: 0.7rem;
+    transition: background-color var(--t-mid) var(--ease-out);
+  }
+  .tile:hover { background: var(--paper); }
+  .tile__no { color: var(--accent-ink); }
+  .tile__t { font-size: var(--fs-m); line-height: 1.3; letter-spacing: -0.02em; }
+  .tile__b { color: var(--ink-2); font-size: 0.9375rem; }
+  @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+</style>
