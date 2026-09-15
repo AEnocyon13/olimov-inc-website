@@ -3,6 +3,11 @@
 日本とウズベキスタンをつなぐナレッジブローカー、OLIMOV株式会社のコーポレートサイト。
 Astro による静的サイト。日本語（既定）/ 英語 / ロシア語の3言語。
 
+**公開先** → https://aenocyon13.github.io/olimov-inc-website/
+
+`main` への push で GitHub Actions が自動ビルド・デプロイします
+（`.github/workflows/deploy.yml`）。
+
 ---
 
 ## 未掲載の項目
