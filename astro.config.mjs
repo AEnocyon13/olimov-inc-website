@@ -1,8 +1,10 @@
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages fills these in at build time (see .github/workflows/deploy.yml),
-// so the repo can be renamed or moved to a custom domain without touching code.
-// Locally both fall back to root, which keeps `npm run dev` at http://localhost:4321/.
+// Both are supplied at build time (see .github/workflows/deploy.yml), so a
+// change of host or a custom domain needs no code change. Cloudflare Pages
+// serves at the domain root, so PAGES_BASE stays unset there; it exists for
+// hosts that serve from a sub-path. Locally both fall back to root, which
+// keeps `npm run dev` at http://localhost:4321/.
 const site = process.env.SITE_URL || 'https://olimov-inc.example';
 const base = process.env.PAGES_BASE || '/';
 

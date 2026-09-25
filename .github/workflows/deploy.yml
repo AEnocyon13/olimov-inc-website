@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -7,16 +7,14 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  deployments: write
 
-# Let a running deployment finish rather than cancelling it half-published.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,30 +24,20 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Supplies origin + base_path, so renaming the repo or attaching a
-      # custom domain needs no change in astro.config.mjs.
-      - name: Configure Pages
-        id: pages
-        uses: actions/configure-pages@v5
-
       - run: npm ci
 
+      # Cloudflare Pages serves at the domain root, so PAGES_BASE stays unset
+      # and astro.config falls back to "/". SITE_URL only feeds the canonical
+      # and hreflang tags; set it as a repository variable once the project
+      # has its address (Settings > Secrets and variables > Actions > Variables).
       - name: Build
         run: npm run build
         env:
-          SITE_URL: ${{ steps.pages.outputs.origin }}
-          PAGES_BASE: ${{ steps.pages.outputs.base_path }}
+          SITE_URL: ${{ vars.SITE_URL }}
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=olimov-inc-website

@@ -3,10 +3,23 @@
 日本とウズベキスタンをつなぐナレッジブローカー、OLIMOV株式会社のコーポレートサイト。
 Astro による静的サイト。日本語（既定）/ 英語 / ロシア語の3言語。
 
-**公開先** → https://aenocyon13.github.io/olimov-inc-website/
+**ホスティング: Cloudflare Pages**（リポジトリは private のまま、サイトだけ公開）
 
-`main` への push で GitHub Actions が自動ビルド・デプロイします
-（`.github/workflows/deploy.yml`）。
+```bash
+npm run deploy      # ローカルから直接デプロイ（要 wrangler login）
+```
+
+`main` への push でも GitHub Actions が自動デプロイします
+（`.github/workflows/deploy.yml`）。CI から出す場合はリポジトリに以下を設定してください。
+
+| 種別 | 名前 | 取得元 |
+|---|---|---|
+| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare ダッシュボード → My Profile → API Tokens（テンプレート "Edit Cloudflare Workers"、または Account / Cloudflare Pages / Edit 権限） |
+| Secret | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare ダッシュボードの URL に含まれる ID |
+| Variable | `SITE_URL` | 確定したサイトの URL（canonical と hreflang に使用。未設定でもビルドは通ります） |
+
+Cloudflare Pages はドメイン直下で配信するため `PAGES_BASE` は未設定のままにします。
+サブパス配信のホストに移す場合のみ指定してください。
 
 ---
 
