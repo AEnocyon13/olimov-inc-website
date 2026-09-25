@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -7,15 +7,19 @@ on:
 
 permissions:
   contents: read
-  deployments: write
+  pages: write
+  id-token: write
 
+# Let a running deployment finish rather than cancelling it half-published.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      pages-ready: ${{ steps.pages.outcome }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,35 +28,39 @@ jobs:
           node-version: 22
           cache: npm
 
+      # Pages is unavailable while the repository is private on a free plan.
+      # Allowed to fail so a push still goes green; the deploy job below is
+      # skipped until Pages can be resolved, and resumes on its own once the
+      # repository is public again.
+      - name: Configure Pages
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+
       - run: npm ci
 
-      # Cloudflare Pages serves at the domain root, so PAGES_BASE stays unset
-      # and astro.config falls back to "/". SITE_URL only feeds the canonical
-      # and hreflang tags; set it as a repository variable once the project
-      # has its address (Settings > Secrets and variables > Actions > Variables).
       - name: Build
         run: npm run build
         env:
-          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE: ${{ steps.pages.outputs.base_path }}
 
-      # Skips cleanly (rather than failing red) until the Cloudflare
-      # credentials are added to the repository secrets.
-      - name: Check credentials
-        id: cf
-        env:
-          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: echo "ready=${{ secrets.CLOUDFLARE_API_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+      - name: Pages not enabled
+        if: steps.pages.outcome != 'success'
+        run: echo "::notice::Build succeeded. Publishing is paused because GitHub Pages is not enabled — a private repository on the free plan cannot use it."
 
-      - name: Deploy
-        if: steps.cf.outputs.ready == 'true'
-        uses: cloudflare/wrangler-action@v3
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.pages.outcome == 'success'
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=olimov-inc-website
+          path: ./dist
 
-      - name: Credentials missing
-        if: steps.cf.outputs.ready != 'true'
-        run: |
-          echo "::notice::Build succeeded. Add CLOUDFLARE_API_TOKEN and \
-          CLOUDFLARE_ACCOUNT_ID to the repository secrets to publish."
+  deploy:
+    needs: build
+    if: needs.build.outputs.pages-ready == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

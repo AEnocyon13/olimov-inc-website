@@ -3,17 +3,20 @@
 日本とウズベキスタンをつなぐナレッジブローカー、OLIMOV株式会社のコーポレートサイト。
 Astro による静的サイト。日本語（既定）/ 英語 / ロシア語の3言語。
 
-**ホスティング: Cloudflare Pages**（リポジトリは private のまま、サイトだけ公開）
+**公開先** → https://aenocyon13.github.io/olimov-inc-website/
 
-```bash
-npm run deploy      # ローカルから直接デプロイ（要 wrangler login）
-```
+`main` への push で GitHub Actions がビルドし、GitHub Pages に公開します
+（`.github/workflows/deploy.yml`）。
 
-`main` への push でも GitHub Actions が自動デプロイします
-（`.github/workflows/deploy.yml`）。CI から出す場合はリポジトリに以下を設定してください。
+> **現在停止中。** 無料プランでは private リポジトリで GitHub Pages を使えないため、
+> リポジトリが private の間は公開されません。ワークフローはビルドまで通したうえで
+> 公開手順だけを飛ばすので、push が赤くなることはありません。
+> リポジトリを public に戻せば、次の push で自動的に復旧します。
 
-| 種別 | 名前 | 取得元 |
-|---|---|---|
+ホストを変える場合は `SITE_URL` と `PAGES_BASE` を環境変数で渡してください
+（`astro.config.mjs` 参照）。サブパス配信でなければ `PAGES_BASE` は不要です。
+
+---|---|---|
 | Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare ダッシュボード → My Profile → API Tokens（テンプレート "Edit Cloudflare Workers"、または Account / Cloudflare Pages / Edit 権限） |
 | Secret | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare ダッシュボードの URL に含まれる ID |
 | Variable | `SITE_URL` | 確定したサイトの URL（canonical と hreflang に使用。未設定でもビルドは通ります） |

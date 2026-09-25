@@ -8,14 +8,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "tokens": "esbuild tools/gen-m3-tokens.mjs --bundle --platform=node --format=cjs --outfile=node_modules/.cache/m3-tokens.cjs --log-level=error && node node_modules/.cache/m3-tokens.cjs",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name=olimov-inc-website"
+    "tokens": "esbuild tools/gen-m3-tokens.mjs --bundle --platform=node --format=cjs --outfile=node_modules/.cache/m3-tokens.cjs --log-level=error && node node_modules/.cache/m3-tokens.cjs"
   },
   "dependencies": {
     "astro": "^5.0.0"
   },
   "devDependencies": {
-    "@material/material-color-utilities": "^0.4.0",
-    "wrangler": "^4.140.0"
+    "@material/material-color-utilities": "^0.4.0"
   }
 }
