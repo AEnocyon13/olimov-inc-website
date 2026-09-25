@@ -4,27 +4,21 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const d = t(lang);
 ---
-<section id="flows" class="section flows">
+<section id="flows" class="section">
   <div class="wrap">
-    <div class="marker rv">
-      <span class="marker__dot"></span>
-      <span class="micro">{d.flows.label}</span>
-      <span class="marker__line"></span>
-      <span class="micro tnum">{d.flows.items.length.toString().padStart(2, '0')}</span>
-    </div>
+    <header class="sec-head rv">
+      <p class="md-label-large sec-head__over">{d.flows.label}</p>
+      <h2 class="md-headline-large md-emphasized sec-head__title">{d.flows.title}</h2>
+      <p class="md-body-large sec-head__support">{d.flows.lead}</p>
+    </header>
 
-    <div class="sec__head">
-      <h2 class="sec__title rvl"><span class="line"><span>{d.flows.title}</span></span></h2>
-      <p class="lead rv" data-d="1">{d.flows.lead}</p>
-    </div>
-
-    <ol class="rows">
-      {d.flows.items.map((f) => (
-        <li class="flow rv" data-dir={f.dir}>
-          <div class="flow__top">
-            <span class="micro flow__code">{f.code}</span>
-            <h3 class="flow__name">{f.name}</h3>
-            <p class="micro flow__route">
+    <ul class="flows">
+      {d.flows.items.map((f, i) => (
+        <li class="md-card md-card--filled md-card--large flow rv" data-dir={f.dir} data-d={String(i + 1)}>
+          <div class="flow__head">
+            <p class="md-label-large flow__code">{f.code}</p>
+            <h3 class="md-headline-small md-emphasized flow__name">{f.name}</h3>
+            <p class="md-title-medium flow__route">
               <span>{f.from}</span>
               <span class="flow__glyph" aria-hidden="true">
                 {f.dir === 'fwd' ? '→' : f.dir === 'rev' ? '←' : '⇄'}
@@ -33,106 +27,85 @@ const d = t(lang);
             </p>
           </div>
 
-          <div class="bar" aria-hidden="true"><span class="bar__fill"></span></div>
-
-          <div class="flow__body">
-            <ul class="chips">
-              {f.items.map((i) => <li class="micro">{i}</li>)}
-            </ul>
-            <p class="flow__note">{f.note}</p>
+          <div class="bar" aria-hidden="true">
+            <span class="bar__track"></span>
+            <span class="bar__indicator"></span>
           </div>
+
+          <ul class="tags">
+            {f.items.map((x) => <li class="md-chip">{x}</li>)}
+          </ul>
+          <p class="md-body-medium flow__note">{f.note}</p>
         </li>
       ))}
-    </ol>
+    </ul>
 
-    <p class="micro flows__note rv">{d.flows.note}</p>
+    <p class="md-body-small flows__note rv">{d.flows.note}</p>
   </div>
 </section>
 
 <style>
-  .flows { overflow: hidden; }
-  .sec__head { display: grid; gap: var(--sp-3) var(--sp-6); margin-bottom: clamp(3rem, 7vw, 5.5rem); }
-  @media (min-width: 900px) {
-    .sec__head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; }
-  }
-  .sec__title { font-size: var(--fs-xl); }
+  .flows { display: grid; gap: var(--md-space-4); }
+  .flow { padding: var(--md-space-6); min-width: 0; }
+  .flow > * { min-width: 0; }
+  @media (min-width: 840px) { .flow { padding: var(--md-space-8); } }
 
-  .rows { border-top: 1px solid var(--rule); }
-  .flow { padding-block: clamp(2rem, 4.5vw, 3.25rem); border-bottom: 1px solid var(--rule); }
-
-  .flow__top {
-    display: grid; align-items: baseline; gap: 0.4rem 1.1rem;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    margin-bottom: clamp(1.25rem, 2.6vw, 1.75rem);
+  .flow__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--md-space-2) var(--md-space-6);
+    align-items: baseline;
+    margin-bottom: var(--md-space-6);
   }
-  .flow__code { color: var(--accent-ink); }
-  .flow__name { font-size: var(--fs-l); letter-spacing: -0.025em; }
+  .flow__code { color: var(--md-sys-color-primary); grid-column: 1 / -1; }
   .flow__route {
-    display: flex; align-items: center; gap: 0.6rem; white-space: nowrap;
-    color: var(--ink-3); justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: var(--md-space-3);
+    white-space: nowrap;
+    color: var(--md-sys-color-on-surface-variant);
+    justify-self: end;
   }
-  .flow__glyph { color: var(--accent-ink); font-size: 1rem; line-height: 1; }
-  @media (max-width: 639px) {
-    .flow__top { grid-template-columns: auto minmax(0, 1fr); }
-    .flow__route { grid-column: 1 / -1; justify-self: start; }
+  .flow__glyph { color: var(--md-sys-color-primary); }
+  @media (max-width: 719px) {
+    .flow__head { grid-template-columns: minmax(0, 1fr); }
+    .flow__route { justify-self: start; }
   }
 
-  /* The direction of travel, drawn. Outbound fills from the left,
-     inbound from the right, both-ways from the centre. */
-  .bar { position: relative; height: 2px; background: var(--rule); margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
-  .bar__fill {
-    position: absolute; inset: 0; background: var(--ink);
+  /* M3 linear progress indicator: track + indicator + stop. */
+  .bar { position: relative; height: 4px; margin-bottom: var(--md-space-6); }
+  .bar__track {
+    position: absolute; inset: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-surface-container-highest);
+  }
+  .bar__indicator {
+    position: absolute; inset: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
     transform: scaleX(0);
-    transition: transform 1200ms var(--ease-io) 120ms;
+    transition: transform var(--md-sys-motion-duration-extra-long2) var(--md-sys-motion-easing-emphasized) 100ms;
   }
-  /* A single accent square marks the end the traffic arrives at. */
-  .bar::after {
-    content: ''; position: absolute; top: -2px; width: 6px; height: 6px;
-    background: var(--accent);
-    opacity: 0; transition: opacity 300ms var(--ease-out) 900ms;
-  }
-  [data-dir='fwd']  .bar__fill { transform-origin: left; }
-  [data-dir='fwd']  .bar::after { right: 0; }
-  [data-dir='rev']  .bar__fill { transform-origin: right; }
-  [data-dir='rev']  .bar::after { left: 0; }
-  [data-dir='both'] .bar__fill { transform-origin: center; }
-  [data-dir='both'] .bar::after { left: calc(50% - 3px); }
-  .flow.is-in .bar__fill { transform: scaleX(1); }
-  .flow.is-in .bar::after { opacity: 1; }
+  [data-dir='fwd']  .bar__indicator { transform-origin: left; }
+  [data-dir='rev']  .bar__indicator { transform-origin: right; background: var(--md-sys-color-tertiary); }
+  [data-dir='both'] .bar__indicator { transform-origin: center; background: var(--md-sys-color-secondary); }
+  .flow.is-in .bar__indicator { transform: scaleX(1); }
 
-  @keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  @keyframes tip-show { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes bar-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   @supports (animation-timeline: view()) {
-    :global(.sda) .bar__fill {
+    :global(.sda) .bar__indicator {
       transform: none; transition: none;
-      animation: bar-grow linear both;
+      animation: bar-fill linear both;
       animation-timeline: view();
-      animation-range: entry 20% entry 92%;
-    }
-    :global(.sda) .bar::after {
-      opacity: 1; transition: none;
-      animation: tip-show linear both;
-      animation-timeline: view();
-      animation-range: entry 70% entry 95%;
+      animation-range: entry 25% entry 95%;
     }
   }
 
-  .flow__body { display: grid; gap: var(--sp-2) var(--sp-5); }
-  @media (min-width: 900px) { .flow__body { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); } }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; align-content: start; }
-  .chips li {
-    padding: 0.5rem 0.85rem;
-    box-shadow: inset 0 0 0 1px var(--rule);
-    color: var(--ink); line-height: 1.2;
-    text-transform: none; letter-spacing: 0.02em;
-    font-family: var(--body); font-size: 0.8125rem;
-  }
-  .flow__note { color: var(--ink-3); font-size: 0.9375rem; }
-  .flows__note { margin-top: var(--sp-4); color: var(--ink-3); }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--md-space-2); margin-bottom: var(--md-space-4); }
+  .flow__note { color: var(--md-sys-color-on-surface-variant); max-width: 60ch; }
+  .flows__note { color: var(--md-sys-color-on-surface-variant); margin-top: var(--md-space-6); }
 
   @media (prefers-reduced-motion: reduce) {
-    .bar__fill { transform: scaleX(1) !important; transition: none !important; animation: none !important; }
-    .bar::after { opacity: 1 !important; transition: none !important; animation: none !important; }
+    .bar__indicator { transform: scaleX(1) !important; transition: none !important; animation: none !important; }
   }
 </style>

@@ -2,84 +2,63 @@
 import { t, type Lang } from '../i18n/content';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const d = t(lang);
-const f = d.founder;
+const f = t(lang).founder;
 ---
-<section id="founder" class="section founder">
+<section id="founder" class="section">
   <div class="wrap">
-    <div class="marker rv">
-      <span class="marker__dot"></span>
-      <span class="micro">{f.label}</span>
-      <span class="marker__line"></span>
-    </div>
+    <header class="sec-head rv">
+      <p class="md-label-large sec-head__over">{f.label}</p>
+      <h2 class="md-headline-large md-emphasized sec-head__title">{f.title}</h2>
+      <p class="md-body-large sec-head__support">{f.lead}</p>
+    </header>
 
-    <h2 class="founder__title rvl"><span class="line"><span>{f.title}</span></span></h2>
-
-    <div class="founder__grid">
-      <div class="who rv" data-d="1">
-        <p class="who__name">{f.name}</p>
-        {f.nameJa && <p class="micro who__kana">{f.nameJa}</p>}
-        <p class="micro who__role">{f.role}</p>
-        <p class="lead who__lead">{f.lead}</p>
-
-        <div class="langs">
-          <p class="micro langs__label">{f.langs.label}</p>
-          <ul class="langs__list">
-            {f.langs.items.map((l) => <li>{l}</li>)}
-          </ul>
-        </div>
+    <div class="grid">
+      <div class="md-card md-card--filled md-card--large who rv">
+        <p class="md-headline-small md-emphasized who__name">{f.name}</p>
+        {f.nameJa && <p class="md-body-medium who__kana">{f.nameJa}</p>}
+        <p class="md-label-large who__role">{f.role}</p>
+        <hr class="md-divider who__rule" />
+        <p class="md-label-large who__langs-label">{f.langs.label}</p>
+        <ul class="tags">
+          {f.langs.items.map((l) => <li class="md-chip md-chip--tonal">{l}</li>)}
+        </ul>
       </div>
 
-      <div class="rv" data-d="2">
-        <ol class="tl">
+      <div class="rv" data-d="1">
+        <ol class="md-list tl">
           {f.timeline.map((row) => (
-            <li class="tl__row">
-              <span class="micro tl__year tnum">{row.year}</span>
-              <span class="tl__text">{row.text}</span>
+            <li class="md-list-item tl__row">
+              <span class="md-label-large md-list-item__overline tl__year tnum">{row.year}</span>
+              <span class="md-body-medium">{row.text}</span>
             </li>
           ))}
         </ol>
-        <p class="founder__note">{f.note}</p>
+        <p class="md-body-medium founder__note">{f.note}</p>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .founder__title { font-size: var(--fs-xl); margin-bottom: clamp(2.5rem, 6vw, 4.5rem); max-width: 18ch; }
+  .grid { display: grid; gap: var(--md-space-6); }
+  @media (min-width: 960px) { .grid { grid-template-columns: minmax(0, 24rem) minmax(0, 1fr); gap: var(--md-space-12); } }
 
-  .founder__grid { display: grid; gap: var(--sp-6) var(--sp-7); }
-  @media (min-width: 940px) {
-    .founder__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
-  }
+  .who { padding: var(--md-space-6); align-self: start; }
+  @media (min-width: 840px) { .who { padding: var(--md-space-8); } }
+  .who__name { margin-bottom: var(--md-space-2); }
+  .who__kana { color: var(--md-sys-color-on-surface-variant); }
+  .who__role { color: var(--md-sys-color-primary); margin-top: var(--md-space-3); }
+  .who__rule { margin-block: var(--md-space-6); }
+  .who__langs-label { color: var(--md-sys-color-on-surface-variant); margin-bottom: var(--md-space-3); }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--md-space-2); }
 
-  .who__name {
-    font-family: var(--display); font-weight: 700;
-    font-size: clamp(1.5rem, 2.8vw, 2.125rem); line-height: 1.1;
-    letter-spacing: -0.035em;
-  }
-  .who__kana { color: var(--ink-3); margin-top: 0.5rem; text-transform: none; letter-spacing: 0.08em; }
-  .who__role { color: var(--accent-ink); margin-top: 0.75rem; }
-  .who__lead { margin-top: var(--sp-3); }
-
-  .langs { margin-top: var(--sp-4); padding-top: var(--sp-3); border-top: 1px solid var(--rule); }
-  .langs__label { color: var(--ink-3); margin-bottom: 0.85rem; }
-  .langs__list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-  .langs__list li {
-    padding: 0.5rem 0.9rem; font-size: 0.875rem;
-    box-shadow: inset 0 0 0 1px var(--rule);
-  }
-
-  .tl { border-top: 1px solid var(--rule); }
   .tl__row {
-    display: grid; grid-template-columns: minmax(0, 4.5rem) minmax(0, 1fr);
-    gap: 0.35rem 1.5rem; align-items: baseline;
-    padding-block: clamp(0.9rem, 1.8vw, 1.25rem);
-    border-bottom: 1px solid var(--rule);
+    grid-template-columns: minmax(0, 5rem) minmax(0, 1fr);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
   }
-  .tl__year { color: var(--accent-ink); padding-top: 0.2em; }
-  .tl__text { font-size: 0.9375rem; line-height: 1.65; }
+  .tl__row:last-child { border-bottom: 0; }
+  .tl__year { color: var(--md-sys-color-primary); }
   @media (max-width: 419px) { .tl__row { grid-template-columns: minmax(0, 1fr); } }
 
-  .founder__note { color: var(--ink-3); font-size: 0.9375rem; margin-top: var(--sp-3); max-width: 48ch; }
+  .founder__note { color: var(--md-sys-color-on-surface-variant); margin-top: var(--md-space-6); max-width: 56ch; }
 </style>

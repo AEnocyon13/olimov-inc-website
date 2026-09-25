@@ -1,0 +1,124 @@
+---
+import { t, HREF, LANGS, LANG_SHORT, LANG_NAMES, type Lang } from '../i18n/content';
+import Mark from './Mark.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const links = [
+  { href: '#services', label: d.nav.services },
+  { href: '#flows', label: d.nav.flows },
+  { href: '#work', label: d.nav.work },
+  { href: '#founder', label: d.nav.founder },
+  { href: '#trust', label: d.nav.trust },
+];
+---
+<header class="md-top-app-bar">
+  <!-- Leading: navigation icon on compact, brand throughout -->
+  <details class="md-drawer bar__drawer">
+    <summary class="bar__nav-icon md-state" aria-label={d.nav.services}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </summary>
+    <div class="md-drawer__scrim"></div>
+    <nav class="md-drawer__sheet" aria-label={d.nav.services}>
+      <p class="md-title-small drawer__head">{d.nav.services}</p>
+      {links.map((l) => (
+        <a class="md-drawer__item md-label-large md-state" href={l.href}>{l.label}</a>
+      ))}
+      <hr class="md-divider drawer__rule" />
+      <a class="md-drawer__item md-label-large md-state" href="#contact">{d.nav.contact}</a>
+    </nav>
+  </details>
+
+  <a class="bar__brand" href={HREF[lang]} aria-label="OLIMOV CO., LTD.">
+    <Mark size={24} />
+    <span class="md-title-medium bar__word">OLIMOV<span class="bar__word-dim"> CO., LTD.</span></span>
+  </a>
+
+  <nav class="bar__links" aria-label={d.nav.services}>
+    {links.map((l) => (
+      <a class="md-button md-button--text md-state" href={l.href}>{l.label}</a>
+    ))}
+  </nav>
+
+  <div class="bar__trailing">
+    <div class="md-segmented" role="group" aria-label="Language">
+      {LANGS.map((l) => (
+        <a
+          class="md-segmented__item md-state"
+          href={HREF[l]}
+          hreflang={l}
+          lang={l}
+          title={LANG_NAMES[l]}
+          aria-current={l === lang ? 'true' : undefined}
+        >{LANG_SHORT[l]}</a>
+      ))}
+    </div>
+    <a class="md-button md-button--filled md-state bar__cta" href="#contact">{d.nav.contact}</a>
+  </div>
+</header>
+
+<style>
+  .bar__brand {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    gap: var(--md-space-3);
+    padding-inline: var(--md-space-2);
+    flex: none;
+  }
+  .bar__word { white-space: nowrap; }
+  .bar__word-dim { color: var(--md-sys-color-on-surface-variant); font-weight: 400; }
+
+  .bar__links { display: none; margin-inline: auto; gap: var(--md-space-1); }
+  .bar__trailing { display: flex; align-items: center; gap: var(--md-space-2); margin-left: auto; }
+
+  .bar__nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--md-sys-shape-corner-full);
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    list-style: none;
+    flex: none;
+  }
+  .bar__nav-icon::-webkit-details-marker { display: none; }
+
+  .drawer__head {
+    padding: var(--md-space-4) var(--md-space-6) var(--md-space-2);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .drawer__rule { margin: var(--md-space-2) var(--md-space-4); }
+
+  /* Expanded window (840dp+): inline links, no drawer. */
+  @media (min-width: 1100px) {
+    .bar__links { display: flex; }
+    .bar__drawer { display: none; }
+  }
+  @media (max-width: 599px) {
+    .bar__cta { display: none; }
+    .bar__word-dim { display: none; }
+  }
+</style>
+
+<script is:inline>
+  // Close the modal drawer on scrim click, Escape, or after a jump link —
+  // M3 requires a clear escape route from any modal surface.
+  (function () {
+    var d = document.querySelector('.md-drawer');
+    if (!d) return;
+    var close = function () { d.removeAttribute('open'); };
+    d.querySelector('.md-drawer__scrim').addEventListener('click', close);
+    d.querySelectorAll('.md-drawer__item').forEach(function (a) {
+      a.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && d.hasAttribute('open')) close();
+    });
+  })();
+</script>

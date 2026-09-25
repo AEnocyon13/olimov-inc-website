@@ -1,7 +1,10 @@
 ---
+import '../styles/m3-color.css';
+import '../styles/m3-sys.css';
+import '../styles/m3-comp.css';
 import '../styles/global.css';
 import { t, HREF, HTML_LANG, LANGS, asset, type Lang } from '../i18n/content';
-import Nav from '../components/Nav.astro';
+import TopAppBar from '../components/TopAppBar.astro';
 import Footer from '../components/Footer.astro';
 
 interface Props { lang: Lang }
@@ -16,9 +19,10 @@ const site = Astro.site ?? new URL('https://olimov-inc.example');
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{d.meta.title}</title>
   <meta name="description" content={d.meta.description} />
-  <meta name="theme-color" content="#F2F1ED" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)" />
-  <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+  <!-- M3 surface role for each scheme -->
+  <meta name="theme-color" content="#fff8f6" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1e100d" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
   <link rel="canonical" href={new URL(HREF[lang], site).href} />
   {LANGS.map((l) => (
     <link rel="alternate" hreflang={l} href={new URL(HREF[l], site).href} />
@@ -32,12 +36,13 @@ const site = Astro.site ?? new URL('https://olimov-inc.example');
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Roboto Flex is M3's default typeface (Latin + Cyrillic);
+       Noto Sans JP carries Japanese. -->
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400..900&family=Zen+Kaku+Gothic+New:wght@400;500;900&family=JetBrains+Mono:wght@500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,300..900&display=swap"
   />
 
-  <!-- Pick the animation strategy before first paint so nothing flashes. -->
   <script is:inline>
     (function () {
       var r = document.documentElement;
@@ -49,18 +54,18 @@ const site = Astro.site ?? new URL('https://olimov-inc.example');
   </script>
 </head>
 <body>
-  <a class="skip" href="#main">{d.skip}</a>
-  <Nav lang={lang} />
+  <a class="skip md-label-large" href="#main">{d.skip}</a>
+  <TopAppBar lang={lang} />
   <main id="main"><slot /></main>
   <Footer lang={lang} />
 
   <script is:inline>
-    // Fallback reveal. Only runs where scroll-driven animations are missing.
+    // Reveal fallback for browsers without scroll-driven animations.
     (function () {
       var r = document.documentElement;
       if (r.classList.contains('sda')) return;
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var targets = document.querySelectorAll('.rv, .rvl');
+      var targets = document.querySelectorAll('.rv');
       if (!('IntersectionObserver' in window)) {
         targets.forEach(function (el) { el.classList.add('is-in'); });
         return;

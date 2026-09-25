@@ -1,0 +1,162 @@
+/* ============================================================
+   Material Design 3 — system tokens
+   Type scale, shape scale, elevation, state layers, motion.
+   Colour roles live in m3-color.css (generated).
+   ============================================================ */
+
+:root {
+  /* ---- reference typefaces -------------------------------
+     M3 splits the scale into a brand typeface (Display,
+     Headline) and a plain typeface (Body, Label); Roboto is
+     the default for both. Roboto Flex covers Latin and
+     Cyrillic; Noto Sans JP carries Japanese and is listed as
+     the fallback so JP glyphs never drop to a system font. */
+  --md-ref-typeface-brand: 'Roboto Flex', 'Noto Sans JP', system-ui, sans-serif;
+  --md-ref-typeface-plain: 'Roboto Flex', 'Noto Sans JP', system-ui, sans-serif;
+
+  /* ---- shape scale (10 steps) ---- */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-increased: 20px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-extra-large-increased: 32px;
+  --md-sys-shape-corner-extra-extra-large: 48px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* ---- elevation (levels 0–5) ---- */
+  --md-sys-elevation-level0: none;
+  --md-sys-elevation-level1:
+    0 1px 2px 0 rgba(0, 0, 0, 0.30),
+    0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level2:
+    0 1px 2px 0 rgba(0, 0, 0, 0.30),
+    0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level3:
+    0 1px 3px 0 rgba(0, 0, 0, 0.30),
+    0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level4:
+    0 2px 3px 0 rgba(0, 0, 0, 0.30),
+    0 6px 10px 4px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level5:
+    0 4px 4px 0 rgba(0, 0, 0, 0.30),
+    0 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+  /* ---- state layer opacities ---- */
+  --md-sys-state-hover-state-layer-opacity: 0.08;
+  --md-sys-state-focus-state-layer-opacity: 0.10;
+  --md-sys-state-pressed-state-layer-opacity: 0.10;
+  --md-sys-state-dragged-state-layer-opacity: 0.16;
+
+  /* ---- motion: easing ---- */
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md-sys-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+
+  /* ---- motion: duration ---- */
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+  --md-sys-motion-duration-extra-long1: 700ms;
+  --md-sys-motion-duration-extra-long2: 800ms;
+  --md-sys-motion-duration-extra-long3: 900ms;
+  --md-sys-motion-duration-extra-long4: 1000ms;
+
+  /* ---- 4dp spacing grid ---- */
+  --md-space-1: 4px;   --md-space-2: 8px;   --md-space-3: 12px;
+  --md-space-4: 16px;  --md-space-6: 24px;  --md-space-8: 32px;
+  --md-space-10: 40px; --md-space-12: 48px; --md-space-16: 64px;
+  --md-space-20: 80px; --md-space-28: 112px;
+
+  /* Line-height multiplier for the language height category.
+     M3 groups scripts as small / medium / large / extra large;
+     Japanese is Medium, roughly 7% taller than the Latin base. */
+  --md-line-height-scale: 1;
+}
+
+:lang(ja) { --md-line-height-scale: 1.07; }
+
+/* ============================================================
+   Type scale — 15 baseline styles
+   Sizes follow the M3 web conversion: 1sp = 0.0625rem.
+   ============================================================ */
+
+.md-display-large, .md-display-medium, .md-display-small,
+.md-headline-large, .md-headline-medium, .md-headline-small {
+  font-family: var(--md-ref-typeface-brand);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.md-title-large, .md-title-medium, .md-title-small,
+.md-body-large, .md-body-medium, .md-body-small,
+.md-label-large, .md-label-medium, .md-label-small {
+  font-family: var(--md-ref-typeface-plain);
+}
+
+.md-display-large  { font-size: 3.5625rem; line-height: calc(4rem * var(--md-line-height-scale)); letter-spacing: -0.015625rem; }
+.md-display-medium { font-size: 2.8125rem; line-height: calc(3.25rem * var(--md-line-height-scale)); }
+.md-display-small  { font-size: 2.25rem;   line-height: calc(2.75rem * var(--md-line-height-scale)); }
+
+.md-headline-large  { font-size: 2rem;    line-height: calc(2.5rem * var(--md-line-height-scale)); }
+.md-headline-medium { font-size: 1.75rem; line-height: calc(2.25rem * var(--md-line-height-scale)); }
+.md-headline-small  { font-size: 1.5rem;  line-height: calc(2rem * var(--md-line-height-scale)); }
+
+.md-title-large  { font-size: 1.375rem; line-height: calc(1.75rem * var(--md-line-height-scale)); font-weight: 400; letter-spacing: 0; }
+.md-title-medium { font-size: 1rem;     line-height: calc(1.5rem * var(--md-line-height-scale));  font-weight: 500; letter-spacing: 0.009375rem; }
+.md-title-small  { font-size: 0.875rem; line-height: calc(1.25rem * var(--md-line-height-scale)); font-weight: 500; letter-spacing: 0.00625rem; }
+
+.md-body-large  { font-size: 1rem;      line-height: calc(1.5rem * var(--md-line-height-scale));  font-weight: 400; letter-spacing: 0.03125rem; }
+.md-body-medium { font-size: 0.875rem;  line-height: calc(1.25rem * var(--md-line-height-scale)); font-weight: 400; letter-spacing: 0.015625rem; }
+.md-body-small  { font-size: 0.75rem;   line-height: calc(1rem * var(--md-line-height-scale));    font-weight: 400; letter-spacing: 0.025rem; }
+
+.md-label-large  { font-size: 0.875rem;  line-height: calc(1.25rem * var(--md-line-height-scale)); font-weight: 500; letter-spacing: 0.00625rem; }
+.md-label-medium { font-size: 0.75rem;   line-height: calc(1rem * var(--md-line-height-scale));    font-weight: 500; letter-spacing: 0.03125rem; }
+.md-label-small  { font-size: 0.6875rem; line-height: calc(1rem * var(--md-line-height-scale));    font-weight: 500; letter-spacing: 0.03125rem; }
+
+/* ---- emphasized set --------------------------------------
+   Added in the expressive update: same scale, higher weight,
+   for headlines, selection and other editorial treatments. */
+.md-emphasized.md-display-large,
+.md-emphasized.md-display-medium,
+.md-emphasized.md-display-small,
+.md-emphasized.md-headline-large,
+.md-emphasized.md-headline-medium,
+.md-emphasized.md-headline-small,
+.md-emphasized.md-body-large,
+.md-emphasized.md-body-medium,
+.md-emphasized.md-body-small { font-weight: 500; }
+
+.md-emphasized.md-title-large,
+.md-emphasized.md-title-medium,
+.md-emphasized.md-title-small,
+.md-emphasized.md-label-large,
+.md-emphasized.md-label-medium,
+.md-emphasized.md-label-small { font-weight: 700; }
+
+/* ---- one documented extension ----------------------------
+   M3 sanctions customising the scale. Display Large tops out
+   at 57sp, which is a product-screen size; a marketing hero
+   on an expanded window needs one step above it. Everything
+   else on the page stays on the standard scale. */
+.md-display-hero {
+  font-family: var(--md-ref-typeface-brand);
+  font-weight: 500;
+  font-size: clamp(2.8125rem, 7vw, 6.5rem);
+  line-height: calc(1.08em * var(--md-line-height-scale));
+  letter-spacing: -0.03em;
+}

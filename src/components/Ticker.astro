@@ -3,53 +3,38 @@ import { t, type Lang } from '../i18n/content';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const d = t(lang);
-const items = d.ticker;
 ---
 <div class="ticker" aria-hidden="true">
   <div class="ticker__row">
     {[0, 1].map(() => (
       <ul class="ticker__set">
-        {items.map((it) => (
-          <li><span class="ticker__sep"></span>{it}</li>
-        ))}
+        {d.ticker.map((it) => <li class="md-chip">{it}</li>)}
       </ul>
     ))}
   </div>
 </div>
-<p class="sr-only">{items.join(' · ')}</p>
+<p class="sr-only">{d.ticker.join(' · ')}</p>
 
 <style>
   .ticker {
-    border-block: 1px solid var(--rule);
-    padding-block: 0.95rem;
+    padding-block: var(--md-space-6);
     overflow: hidden;
-    /* Fade the ends so it reads as a continuous band, not a clipped list. */
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   }
-  .ticker__row { display: flex; width: max-content; animation: marquee 46s linear infinite; }
-  .ticker__set { display: flex; align-items: center; }
-  .ticker__set li {
-    display: flex; align-items: center; gap: 1.6rem;
-    padding-right: 1.6rem;
-    font-family: var(--mono); font-size: 0.75rem; font-weight: 500;
-    letter-spacing: 0.13em; text-transform: uppercase;
-    color: var(--ink-2); white-space: nowrap;
+  .ticker__row {
+    display: flex;
+    width: max-content;
+    animation: marquee 56s var(--md-sys-motion-easing-linear) infinite;
   }
-  :lang(ja) .ticker__set li, :lang(ru) .ticker__set li { font-family: var(--body); letter-spacing: 0.1em; }
-  .ticker__sep { width: 5px; height: 5px; background: var(--accent); transform: rotate(45deg); flex: none; }
-
+  .ticker__set { display: flex; align-items: center; gap: var(--md-space-2); padding-right: var(--md-space-2); }
   @keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
   .ticker:hover .ticker__row { animation-play-state: paused; }
-  @media (prefers-reduced-motion: reduce) {
-    .ticker__row { animation: none; }
-    .ticker { -webkit-mask-image: none; mask-image: none; }
-    .ticker__set:last-child { display: none; }
-    .ticker__row { flex-wrap: wrap; width: 100%; }
-  }
 
-  .sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  @media (prefers-reduced-motion: reduce) {
+    .ticker { -webkit-mask-image: none; mask-image: none; }
+    .ticker__row { animation: none; flex-wrap: wrap; width: 100%; gap: var(--md-space-2); }
+    .ticker__set:last-child { display: none; }
+    .ticker__set { flex-wrap: wrap; }
   }
 </style>

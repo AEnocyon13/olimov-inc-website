@@ -4,43 +4,38 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const d = t(lang);
 ---
-<section id="work" class="section work">
+<section id="work" class="section">
   <div class="wrap">
-    <div class="marker rv">
-      <span class="marker__dot"></span>
-      <span class="micro">{d.work.label}</span>
-      <span class="marker__line"></span>
-      <span class="micro tnum">{d.work.cases.length.toString().padStart(2, '0')}</span>
-    </div>
-
-    <div class="sec__head">
-      <h2 class="work__title rvl"><span class="line"><span>{d.work.title}</span></span></h2>
-      <p class="lead rv" data-d="1">{d.work.lead}</p>
-    </div>
+    <header class="sec-head rv">
+      <p class="md-label-large sec-head__over">{d.work.label}</p>
+      <h2 class="md-headline-large md-emphasized sec-head__title">{d.work.title}</h2>
+      <p class="md-body-large sec-head__support">{d.work.lead}</p>
+    </header>
 
     <ol class="cases">
       {d.work.cases.map((c, i) => (
         <li class="case" style={`--i:${i}`}>
-          <article class="card">
+          <article class="md-card md-card--elevated md-card--large card">
             <header class="card__head">
-              <span class="card__no micro tnum">{c.no}</span>
-              <span class="card__meta micro">{c.year}</span>
-              <span class="card__meta micro card__place">{c.place}</span>
+              <span class="md-label-large card__no">{c.no}</span>
+              <span class="md-body-small card__meta">{c.year}</span>
+              <span class="md-body-small card__meta card__place">{c.place}</span>
             </header>
 
             <div class="card__body">
-              <div class="card__text">
-                <h3 class="card__title">{c.title}</h3>
-                <p class="card__p">{c.body}</p>
+              <div>
+                <h3 class="md-headline-small md-emphasized card__title">{c.title}</h3>
+                <p class="md-body-medium card__p">{c.body}</p>
               </div>
 
               <div class="spec">
-                <p class="spec__client">{c.client}</p>
-                <dl class="spec__list">
+                <p class="md-body-small spec__client">{c.client}</p>
+                <hr class="md-divider" />
+                <dl class="md-list spec__list">
                   {c.facts.map((f) => (
-                    <div class="spec__row">
-                      <dt class="micro">{f.k}</dt>
-                      <dd>{f.v}</dd>
+                    <div class="md-list-item spec__row">
+                      <dt class="md-label-medium spec__k">{f.k}</dt>
+                      <dd class="md-body-medium spec__v">{f.v}</dd>
                     </div>
                   ))}
                 </dl>
@@ -54,26 +49,12 @@ const d = t(lang);
 </section>
 
 <style>
-  .sec__head { display: grid; gap: var(--sp-3) var(--sp-6); margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
-  @media (min-width: 900px) {
-    .sec__head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; }
-  }
-  .work__title { font-size: var(--fs-xl); }
+  .cases { display: grid; gap: var(--md-space-4); }
+  .case { position: sticky; top: calc(80px + var(--i) * 12px); min-width: 0; }
+  .card { padding: var(--md-space-6); transform-origin: 50% 0; }
+  @media (min-width: 840px) { .card { padding: var(--md-space-8); } }
 
-  /* Stacking deck: each case pins under the one before it, offset by a
-     hairline of its predecessor so the pile stays legible. */
-  .cases { display: grid; gap: clamp(1.25rem, 2.5vw, 2.25rem); }
-  .case { position: sticky; top: calc(5.5rem + var(--i) * 1.1rem); min-width: 0; }
-
-  .card {
-    background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--rule);
-    padding: clamp(1.5rem, 3.6vw, 3.25rem);
-    transform-origin: 50% 0;
-  }
-
-  /* As a card is covered, let it settle back a step. */
-  @keyframes recede { to { transform: scale(0.955); opacity: 0.55; } }
+  @keyframes recede { to { transform: scale(0.96); opacity: 0.6; } }
   @supports (animation-timeline: view()) {
     :global(.sda) .card {
       animation: recede linear both;
@@ -83,59 +64,44 @@ const d = t(lang);
   }
 
   .card__head {
-    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
-    padding-bottom: clamp(1.25rem, 2.4vw, 2rem);
-    border-bottom: 1px solid var(--rule-soft);
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: var(--md-space-3);
+    flex-wrap: wrap;
+    padding-bottom: var(--md-space-4);
+    margin-bottom: var(--md-space-6);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
   }
   .card__no {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 2.15rem; height: 2.15rem; background: var(--ink); color: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
   }
-  .card__meta { color: var(--ink-3); }
+  .card__meta { color: var(--md-sys-color-on-surface-variant); }
   .card__place { margin-left: auto; }
 
-  .card__body { display: grid; gap: var(--sp-4) var(--sp-6); }
-  .card__body > *, .card__text { min-width: 0; }
-  @media (min-width: 960px) {
-    .card__body { grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); }
-  }
-  .card__title {
-    font-size: var(--fs-l); line-height: 1.2; letter-spacing: -0.025em;
-    margin-bottom: var(--sp-2); max-width: 22ch;
-  }
-  .card__p { color: var(--ink-2); max-width: 56ch; }
+  .card__body { display: grid; gap: var(--md-space-8); }
+  .card__body > * { min-width: 0; }
+  @media (min-width: 960px) { .card__body { grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); } }
 
-  /* A spec sheet, not a headline number: every value here is a term that
-     was actually fixed in the agreement. */
+  .card__title { margin-bottom: var(--md-space-4); max-width: 24ch; }
+  .card__p { color: var(--md-sys-color-on-surface-variant); max-width: 60ch; }
+
   .spec { align-self: start; }
-  @media (min-width: 960px) { .spec { border-left: 1px solid var(--rule); padding-left: var(--sp-4); } }
-  @media (max-width: 959px) { .spec { border-top: 2px solid var(--ink); padding-top: 1.1rem; } }
-
-  .spec__client {
-    position: relative;
-    font-size: 0.875rem; line-height: 1.65; color: var(--ink-2);
-    padding: 0.85rem 0 1rem; margin-bottom: 0.25rem;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .spec__client::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 18px; height: 2px; background: var(--accent);
-  }
+  .spec__client { color: var(--md-sys-color-primary); margin-bottom: var(--md-space-4); }
   .spec__row {
-    display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
-    gap: 0.5rem 1rem; align-items: baseline;
-    padding-block: 0.7rem;
-    border-bottom: 1px solid var(--rule-soft);
+    grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+    min-height: 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
   }
   .spec__row:last-child { border-bottom: 0; }
-  .spec__row dt { color: var(--ink-3); padding-top: 0.15em; }
-  .spec__row dd {
-    margin: 0; font-family: var(--display); font-weight: 500;
-    font-size: 0.9375rem; letter-spacing: -0.015em; line-height: 1.45;
-    font-variant-numeric: tabular-nums;
-  }
-  :lang(ja) .spec__row dd { font-family: var(--body); font-weight: 500; }
+  .spec__k { color: var(--md-sys-color-on-surface-variant); }
+  .spec__v { margin: 0; }
   @media (max-width: 419px) { .spec__row { grid-template-columns: minmax(0, 1fr); } }
 
   @media (prefers-reduced-motion: reduce) {

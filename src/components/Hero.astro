@@ -7,137 +7,133 @@ const ax = d.hero.axis;
 ---
 <section class="hero">
   <div class="wrap hero__inner">
-    <p class="micro hero__eyebrow fade-load">{d.hero.eyebrow}</p>
+    <p class="md-label-large hero__over load-in">{d.hero.eyebrow}</p>
 
-    <h1 class="hero__title in-load">
-      {d.hero.title.map((l, i) => (
-        <span class="line">
-          <span>{l}{i === d.hero.title.length - 1 && <i class="hero__seal" aria-hidden="true"></i>}</span>
-        </span>
-      ))}
+    <h1 class="md-display-hero hero__title load-in" data-d="1">
+      {d.hero.title.map((l) => <span class="hero__line">{l}</span>)}
     </h1>
 
-    <div class="hero__foot">
-      <p class="lead hero__lead fade-load" data-d="1">{d.hero.lead}</p>
-      <div class="hero__act fade-load" data-d="2">
-        <a class="btn" href="#contact">
-          {d.hero.cta}
-          <svg class="btn__arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-            <path d="M1 7.5h12M8 2.5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <span class="micro hero__ctasub">{d.hero.ctaSub}</span>
-      </div>
+    <p class="md-body-large hero__support load-in" data-d="2">{d.hero.lead}</p>
+
+    <div class="hero__actions load-in" data-d="3">
+      <a class="md-button md-button--filled md-button--large md-state" href="#contact">
+        {d.hero.cta}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="md-body-small hero__note">{d.hero.ctaSub}</span>
     </div>
 
-    <!-- The company's actual diagram: one axis, two directions of travel. -->
-    <figure class="axis fade-load" data-d="3">
+    <!-- Two directions of travel, drawn with the M3 linear progress
+         indicator's track-and-indicator language. -->
+    <figure class="md-card md-card--filled md-card--large axis load-in" data-d="4">
       <figcaption class="sr-only">
         {ax.left} → {ax.right}: {ax.out}. {ax.right} → {ax.left}: {ax.back}.
       </figcaption>
 
       <div class="axis__ends" aria-hidden="true">
-        <span class="micro axis__city">{ax.left}</span>
-        <span class="micro axis__city">{ax.right}</span>
+        <span class="md-title-medium">{ax.left}</span>
+        <span class="md-title-medium">{ax.right}</span>
       </div>
 
       <div class="lane lane--out" aria-hidden="true">
-        <span class="lane__line"></span>
-        <span class="lane__tip"></span>
+        <span class="lane__track"></span>
+        <span class="lane__indicator"></span>
+        <span class="lane__stop"></span>
       </div>
-      <p class="micro lane__label lane__label--out" aria-hidden="true">{ax.out}</p>
+      <p class="md-label-large lane__label lane__label--out" aria-hidden="true">{ax.out}</p>
 
       <div class="lane lane--back" aria-hidden="true">
-        <span class="lane__line"></span>
-        <span class="lane__tip"></span>
+        <span class="lane__track"></span>
+        <span class="lane__indicator"></span>
+        <span class="lane__stop"></span>
       </div>
-      <p class="micro lane__label lane__label--back" aria-hidden="true">{ax.back}</p>
+      <p class="md-label-large lane__label lane__label--back" aria-hidden="true">{ax.back}</p>
     </figure>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
     min-height: 100svh;
-    display: flex; align-items: flex-end;
-    padding-top: clamp(6.25rem, 12.5vh, 9.5rem);
-    padding-bottom: clamp(2.25rem, 5vh, 4rem);
+    display: flex;
+    align-items: center;
+    padding-top: clamp(96px, 14vh, 152px);
+    padding-bottom: var(--md-space-16);
   }
   .hero__inner { width: 100%; }
-  .hero__eyebrow { margin-bottom: clamp(1.25rem, 3.2vh, 2.5rem); }
 
-  .hero__title {
-    font-size: var(--fs-hero);
-    line-height: 1.12;
-    margin-bottom: clamp(1.75rem, 4vh, 3rem);
-    max-width: 17ch;
-  }
-  :lang(en) .hero__title { max-width: 13ch; }
-  :lang(ru) .hero__title { max-width: 13ch; font-size: clamp(2.25rem, 7.2vw, 7.25rem); }
+  .hero__over { color: var(--md-sys-color-primary); margin-bottom: var(--md-space-6); }
+  .hero__title { max-width: 18ch; margin-bottom: var(--md-space-8); }
+  .hero__line { display: block; }
+  :lang(en) .hero__title, :lang(ru) .hero__title { max-width: 14ch; }
 
-  /* The ikat diamond, set as the final mark of the sentence. */
-  .hero__seal {
-    display: inline-block; vertical-align: 0.06em;
-    margin-left: 0.3em;
-    width: 0.26em; height: 0.26em; background: var(--accent);
-    transform: rotate(45deg);
+  .hero__support {
+    color: var(--md-sys-color-on-surface-variant);
+    max-width: 60ch;
+    margin-bottom: var(--md-space-8);
   }
-
-  .hero__foot {
-    display: grid; gap: var(--sp-4) var(--sp-5);
-    grid-template-columns: minmax(0, 1fr);
-    align-items: end;
-    margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--md-space-4) var(--md-space-6);
+    flex-wrap: wrap;
+    margin-bottom: var(--md-space-12);
   }
-  @media (min-width: 900px) {
-    .hero__foot { grid-template-columns: minmax(0, 34rem) minmax(0, auto); justify-content: space-between; }
-  }
-  .hero__act { display: flex; flex-direction: column; align-items: flex-start; gap: 0.85rem; }
-  .hero__ctasub { color: var(--ink-3); }
+  .hero__note { color: var(--md-sys-color-on-surface-variant); }
 
   /* ---- axis ---- */
-  .axis { border-top: 1px solid var(--rule); padding-top: var(--sp-3); margin: 0; }
-  .axis__ends { display: flex; justify-content: space-between; margin-bottom: 0.9rem; }
-  .axis__city { color: var(--ink); font-weight: 500; }
+  .axis { padding: var(--md-space-6); margin: 0; }
+  @media (min-width: 840px) { .axis { padding: var(--md-space-8); } }
 
-  .lane { position: relative; height: 9px; }
-  .lane__line {
-    position: absolute; top: 4px; height: 1px;
-    left: 0; right: 0;
+  .axis__ends {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--md-space-6);
+  }
+
+  .lane { position: relative; height: 4px; }
+  .lane__track {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-surface-container-highest);
+  }
+  .lane__indicator {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--md-sys-shape-corner-full);
     transform: scaleX(0);
-    animation: lane-draw 1400ms var(--ease-io) 620ms both;
+    animation: lane-fill var(--md-sys-motion-duration-extra-long4) var(--md-sys-motion-easing-emphasized) 500ms both;
   }
-  .lane__tip {
-    position: absolute; top: 0.5px; width: 8px; height: 8px;
-    border-style: solid; border-color: currentColor;
-    animation: tip-in 420ms var(--ease-out) 1800ms both;
+  .lane__stop {
+    position: absolute;
+    top: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--md-sys-shape-corner-full);
+    opacity: 0;
+    animation: lane-stop var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard) 1400ms both;
   }
 
-  /* outbound: Japan → Uzbekistan, drawn left to right, in the accent */
-  .lane--out { color: var(--accent); }
-  .lane--out .lane__line { background: var(--accent); transform-origin: left; }
-    /* Inset by 2px: the 45deg rotation grows the box past the line end
-     and would otherwise widen the section's scrollWidth. */
-  .lane--out .lane__tip { right: 2px; border-width: 1.5px 1.5px 0 0; transform: rotate(45deg); }
-  .lane__label--out { color: var(--ink-2); margin: 0.5rem 0 1.15rem; }
+  .lane--out .lane__indicator { background: var(--md-sys-color-primary); transform-origin: left; }
+  .lane--out .lane__stop { right: 0; background: var(--md-sys-color-primary); }
+  .lane__label--out { color: var(--md-sys-color-primary); margin: var(--md-space-3) 0 var(--md-space-6); }
 
-  /* inbound: Uzbekistan → Japan, drawn right to left, in ink */
-  .lane--back { color: var(--ink); }
-  .lane--back .lane__line { background: var(--ink); transform-origin: right; animation-delay: 900ms; }
-  .lane--back .lane__tip { left: 2px; border-width: 0 0 1.5px 1.5px; transform: rotate(45deg); animation-delay: 2100ms; }
-  .lane__label--back { color: var(--ink-2); margin: 0.55rem 0 0; text-align: right; }
-
-  @keyframes lane-draw { to { transform: scaleX(1); } }
-  @keyframes tip-in { from { opacity: 0; } to { opacity: 1; } }
-
-  .sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  .lane--back .lane__indicator { background: var(--md-sys-color-tertiary); transform-origin: right; animation-delay: 800ms; }
+  .lane--back .lane__stop { left: 0; background: var(--md-sys-color-tertiary); animation-delay: 1700ms; }
+  .lane__label--back {
+    color: var(--md-sys-color-tertiary);
+    margin: var(--md-space-3) 0 0;
+    text-align: right;
   }
+
+  @keyframes lane-fill { to { transform: scaleX(1); } }
+  @keyframes lane-stop { to { opacity: 1; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .lane__line { transform: scaleX(1); animation: none; }
-    .lane__tip { opacity: 1; animation: none; }
+    .lane__indicator { transform: scaleX(1); animation: none; }
+    .lane__stop { opacity: 1; animation: none; }
   }
 </style>

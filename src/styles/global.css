@@ -1,300 +1,171 @@
 /* ============================================================
-   OLIMOV CO., LTD. — design tokens
-
-   One ground for the whole document. No inverted sections: the
-   page never flips from light to dark under the reader. Sections
-   are separated by hairlines, spacing and type — not by a change
-   of background.
-
-   Neutral greys carry the page; vermilion appears only as a small
-   mark. It is the one colour both worlds share — Japanese lacquer
-   and 朱, and the madder red at the centre of an Uzbek ikat.
+   OLIMOV CO., LTD.
+   Reset, layout and page-level motion. Everything visual comes
+   from the Material 3 token layers:
+     m3-color.css  — generated colour roles (light + dark)
+     m3-sys.css    — type scale, shape, elevation, motion
+     m3-comp.css   — components
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; color-scheme: light dark; }
 img, svg, video { display: block; max-width: 100%; }
 button, input, textarea, select { font: inherit; color: inherit; }
 :where(ul, ol) { list-style: none; padding: 0; }
-
-:root {
-  /* ---- ground: one field, top to bottom ---- */
-  --paper:        #F4F4F2;   /* the only page background            */
-  --surface:      #FFFFFF;   /* cards; a whisper above the ground   */
-  --ink:          #101012;   /* 16.8:1 on paper                     */
-  --ink-2:        #45454A;   /* body secondary   8.5:1 on paper     */
-  --ink-3:        #5E5E64;   /* meta / labels    6.0:1 on paper     */
-  --rule:         #D9D9D5;   /* hairlines                           */
-  --rule-soft:    #E6E6E3;
-  --rule-strong:  #B9B9B4;   /* section divisions                   */
-
-  /* ---- the one colour, used sparingly ---- */
-  --accent:       #D3391F;   /* small marks and rules only          */
-  --accent-ink:   #B22C11;   /* accent as text   5.6:1 on paper     */
-
-  /* ---- type ---- */
-  --display: 'Unbounded', 'Zen Kaku Gothic New', system-ui, sans-serif;
-  --body: 'Zen Kaku Gothic New', 'Unbounded', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-
-  --fs-hero:  clamp(2.75rem, 9.2vw, 9.5rem);
-  --fs-xl:    clamp(2rem, 5.6vw, 5rem);
-  --fs-l:     clamp(1.5rem, 3.2vw, 2.75rem);
-  --fs-m:     clamp(1.1875rem, 1.9vw, 1.625rem);
-  --fs-lead:  clamp(1.0625rem, 1.35vw, 1.3125rem);
-  --fs-body:  clamp(0.9375rem, 1.02vw, 1.0625rem);
-  --fs-micro: 0.6875rem;
-
-  /* ---- rhythm (density 4/10 — standard, leaning spacious) ---- */
-  --sp-1: 0.5rem;  --sp-2: 1rem;   --sp-3: 1.5rem;  --sp-4: 2rem;
-  --sp-5: 3rem;    --sp-6: 4rem;   --sp-7: 6rem;    --sp-8: 9rem;
-  --section: clamp(5rem, 11vw, 11rem);
-  --gutter: clamp(1.25rem, 5vw, 5.5rem);
-  --measure: 34ch;
-
-  /* ---- motion ---- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);      /* expo-ish, for arrivals */
-  --ease-io:  cubic-bezier(0.76, 0, 0.24, 1);
-  --t-fast: 180ms;
-  --t-mid: 380ms;
-  --t-slow: 720ms;
-
-  --z-nav: 100;
-}
-
-/* Cross-document transitions: language switching feels like one surface.
-   Zero JS, ignored where unsupported. */
-@view-transition { navigation: auto; }
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--body);
-  font-size: var(--fs-body);
-  line-height: 1.75;
-  font-feature-settings: 'palt' 1;   /* proportional JP metrics */
-  text-rendering: optimizeLegibility;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-ref-typeface-plain);
+  font-size: 1rem;
+  line-height: calc(1.5rem * var(--md-line-height-scale));
+  letter-spacing: 0.03125rem;
+  font-feature-settings: 'palt' 1;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-::selection { background: var(--accent); color: #fff; }
-
-/* ---- headings ---- */
-h1, h2, h3 {
-  font-family: var(--display);
-  font-weight: 800;
-  line-height: 0.94;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-  /* Unbounded is a wide face and Russian has long compounds: a single word
-     must never be allowed to set the column width. */
-  overflow-wrap: break-word;
-}
-/* Only hyphenate where a hard break would otherwise be needed. */
-@media (max-width: 640px) {
-  :lang(ru) h1, :lang(ru) h2, :lang(ru) h3,
-  :lang(en) h1, :lang(en) h2, :lang(en) h3 { hyphens: auto; }
-}
-:lang(ja) h1, :lang(ja) h2, :lang(ja) h3 {
-  font-family: var(--body);
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
+h1, h2, h3 { font-weight: inherit; font-size: inherit; }
 a { color: inherit; text-decoration: none; }
 
-/* ---- focus: never removed, always on-brand ---- */
+::selection {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* M3 focus indicator: a 3dp ring in the primary colour, offset
+   from the component so it never sits on top of the label. */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 3px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
 }
 
 .skip {
-  position: absolute; left: var(--gutter); top: -100px;
-  background: var(--ink); color: var(--paper);
-  padding: 0.75rem 1.25rem; z-index: 999;
-  transition: top var(--t-fast) var(--ease-out);
+  position: fixed;
+  left: var(--md-space-4);
+  top: -100px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: var(--md-space-3) var(--md-space-6);
+  border-radius: var(--md-sys-shape-corner-full);
+  background: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  transition: top var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
 }
-.skip:focus { top: 1rem; }
+.skip:focus { top: var(--md-space-4); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
 
 /* ============================================================
-   layout
+   layout — M3 window size classes
+   compact <600 · medium 600–839 · expanded 840–1199 · large 1200+
    ============================================================ */
-.wrap { width: 100%; max-width: 96rem; margin-inline: auto; padding-inline: var(--gutter); }
-.section { padding-block: var(--section); position: relative; }
+.wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--md-space-4);
+}
+@media (min-width: 600px)  { .wrap { padding-inline: var(--md-space-6); } }
+@media (min-width: 840px)  { .wrap { padding-inline: var(--md-space-12); } }
+@media (min-width: 1240px) { .wrap { padding-inline: var(--md-space-20); } }
 
-.grid12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--sp-4) var(--sp-3); }
-@media (max-width: 899px) { .grid12 { grid-template-columns: repeat(6, 1fr); } }
+.section { padding-block: clamp(56px, 9vw, 112px); position: relative; }
 
-/* ============================================================
-   editorial furniture
-   ============================================================ */
-.micro {
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--ink-3);
-  font-feature-settings: normal;
+/* Section header: overline label, headline, supporting text. */
+.sec-head { margin-bottom: var(--md-space-12); }
+.sec-head__over {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md-space-2);
+  color: var(--md-sys-color-primary);
+  margin-bottom: var(--md-space-4);
+}
+.sec-head__over::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: currentColor;
+}
+.sec-head__title { max-width: 20ch; }
+.sec-head__support {
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 56ch;
+  margin-top: var(--md-space-4);
+}
+@media (min-width: 840px) {
+  .sec-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--md-space-12);
+    align-items: end;
+  }
+  .sec-head__over { grid-column: 1 / -1; }
+  .sec-head__support { margin-top: 0; }
 }
 
-/* Section marker: rule, dot, label, count — the spine of the page.
-   With one ground throughout, this row is what tells the reader a new
-   section has started. It carries the only heavy rule on the page. */
-.marker {
-  display: flex; align-items: center; gap: var(--sp-2);
-  padding-top: var(--sp-3);
-  border-top: 1px solid var(--rule-strong);
-  margin-bottom: var(--sp-4);
-}
-.marker__dot { width: 7px; height: 7px; background: var(--accent); flex: none; }
-.marker__line { flex: 1 1 auto; height: 1px; background: var(--rule); }
-
-.lead {
-  font-size: var(--fs-lead);
-  line-height: 1.85;
-  color: var(--ink-2);
-  max-width: 46ch;
-}
-
-.hr { height: 1px; background: var(--rule); border: 0; }
-
-/* Numerals should never jitter as they animate or reflow. */
-.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
-
-/* ============================================================
-   link + button
-   ============================================================ */
-.btn {
-  --btn-fg: var(--paper);
-  --btn-bg: var(--ink);
-  position: relative; display: inline-flex; align-items: center; gap: 0.9em;
-  padding: 1.15rem 1.9rem;
-  min-height: 44px;
-  background: var(--btn-bg); color: var(--btn-fg);
-  font-family: var(--display); font-weight: 600; font-size: 0.9375rem;
-  letter-spacing: -0.01em;
-  border: 0; cursor: pointer;
-  isolation: isolate; overflow: hidden;
-  transition: color var(--t-mid) var(--ease-out);
-}
-:lang(ja) .btn { font-family: var(--body); font-weight: 700; }
-/* Wipe fill — transform only, so it stays on the compositor. */
-.btn::before {
-  content: ''; position: absolute; inset: 0; z-index: -1;
-  background: var(--accent);
-  transform: scaleY(0); transform-origin: bottom;
-  transition: transform var(--t-mid) var(--ease-out);
-}
-.btn:hover::before, .btn:focus-visible::before { transform: scaleY(1); }
-.btn:hover { color: #fff; }
-.btn__arrow { transition: transform var(--t-mid) var(--ease-out); }
-.btn:hover .btn__arrow { transform: translateX(4px); }
-.btn--ghost { --btn-bg: transparent; --btn-fg: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
-
-/* Underline that draws in from the left. */
-.ulink {
-  position: relative; display: inline-block;
-  padding-bottom: 2px;
-  background-image: linear-gradient(var(--accent), var(--accent));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 1px;
-  transition: background-size var(--t-mid) var(--ease-out);
-}
-.ulink:hover, .ulink:focus-visible { background-size: 100% 1px; }
+.tnum { font-variant-numeric: tabular-nums; }
 
 /* ============================================================
    reveal
-   Two implementations of the same intent. Where the browser has
-   scroll-driven animations the whole thing runs off the main
-   thread; elsewhere an IntersectionObserver flips one class and
-   CSS transitions do the rest. Both are switched off entirely
-   under prefers-reduced-motion.
+   Scroll-driven where the browser supports it, an
+   IntersectionObserver class flip otherwise, and fully visible
+   with JS off. Timings come from the M3 motion tokens.
    ============================================================ */
-@keyframes rise   { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
-@keyframes wipeup { from { clip-path: inset(105% 0 0 0); transform: translateY(0.3em); }
-                    to   { clip-path: inset(-40% 0 0 0); transform: none; } }
+@keyframes md-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
-/* --- block reveal --- */
-.rv { opacity: 0; transform: translateY(20px); transition: opacity 640ms var(--ease-out), transform 640ms var(--ease-out); }
-.rv.is-in { opacity: 1; transform: none; }
-.rv[data-d="1"] { transition-delay:  80ms; }
-.rv[data-d="2"] { transition-delay: 160ms; }
-.rv[data-d="3"] { transition-delay: 240ms; }
-.rv[data-d="4"] { transition-delay: 320ms; }
-.rv[data-d="5"] { transition-delay: 400ms; }
-
-/* --- line-by-line reveal for display type --- */
-.line { display: block; overflow: hidden; padding-block: 0.06em; }
-.line > span { display: block; }
-.rvl .line > span {
-  clip-path: inset(105% 0 0 0); transform: translateY(0.3em);
-  transition: clip-path 860ms var(--ease-out), transform 860ms var(--ease-out);
+.rv {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate),
+    transform var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate);
 }
-.rvl.is-in .line > span { clip-path: inset(-40% 0 0 0); transform: none; }
-.rvl .line:nth-child(2) > span { transition-delay:  90ms; }
-.rvl .line:nth-child(3) > span { transition-delay: 180ms; }
-.rvl .line:nth-child(4) > span { transition-delay: 270ms; }
+.rv.is-in { opacity: 1; transform: none; }
+.rv[data-d='1'] { transition-delay: 50ms; }
+.rv[data-d='2'] { transition-delay: 100ms; }
+.rv[data-d='3'] { transition-delay: 150ms; }
+.rv[data-d='4'] { transition-delay: 200ms; }
+.rv[data-d='5'] { transition-delay: 250ms; }
 
-/* --- no JS: show everything, unconditionally --- */
-.no-js .rv, .no-js .rvl .line > span { opacity: 1; transform: none; clip-path: none; transition: none; }
+.no-js .rv { opacity: 1; transform: none; transition: none; }
 
-/* --- scroll-driven upgrade --- */
 @supports (animation-timeline: view()) {
-  /* Range must end inside `entry`, not in `cover`: a `cover` end point can
-     leave an element that is already fully on screen sitting at partial
-     opacity, and elements near the end of the document may never finish
-     because there is nothing left to scroll. Ending at entry ~95% means the
-     reveal completes exactly as the element finishes entering. */
+  /* The range must finish inside `entry`: ending in `cover` can strand an
+     element that is already fully on screen at partial opacity. */
   .sda .rv {
     opacity: 1; transform: none; transition: none;
-    animation: rise linear both;
+    animation: md-rise linear both;
     animation-timeline: view();
     animation-range: entry 10% entry 95%;
   }
-  .sda .rvl .line > span {
-    clip-path: none; transform: none; transition: none;
-    animation: wipeup linear both;
-    animation-timeline: view();
-    animation-range: entry 5% entry 85%;
-  }
 }
 
-/* --- hero: animates on load, not on scroll --- */
-.in-load .line > span { animation: wipeup 980ms var(--ease-out) both; }
-.in-load .line:nth-child(2) > span { animation-delay: 110ms; }
-.in-load .line:nth-child(3) > span { animation-delay: 220ms; }
-.fade-load { animation: rise 800ms var(--ease-out) both; }
-.fade-load[data-d="1"] { animation-delay: 260ms; }
-.fade-load[data-d="2"] { animation-delay: 400ms; }
-.fade-load[data-d="3"] { animation-delay: 540ms; }
-.fade-load[data-d="4"] { animation-delay: 680ms; }
+/* Hero animates on load rather than on scroll. */
+.load-in { animation: md-rise var(--md-sys-motion-duration-long4) var(--md-sys-motion-easing-emphasized-decelerate) both; }
+.load-in[data-d='1'] { animation-delay: 80ms; }
+.load-in[data-d='2'] { animation-delay: 160ms; }
+.load-in[data-d='3'] { animation-delay: 240ms; }
+.load-in[data-d='4'] { animation-delay: 320ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  .rv, .sda .rv, .rvl .line > span, .sda .rvl .line > span, .in-load .line > span, .fade-load {
+  .rv, .sda .rv, .load-in {
     opacity: 1 !important; transform: none !important;
-    clip-path: none !important; animation: none !important; transition: none !important;
+    animation: none !important; transition: none !important;
   }
 }
 
-/* ============================================================
-   print — no reveal state may survive onto paper
-   ============================================================ */
 @media print {
-  .nav, .ticker { display: none; }
-  .rv, .rvl .line > span, .fade-load, .in-load .line > span {
-    opacity: 1 !important; transform: none !important;
-    clip-path: none !important; animation: none !important; transition: none !important;
-  }
-  .case { position: static; }
+  .md-top-app-bar, .ticker { display: none; }
+  .rv, .load-in { opacity: 1 !important; transform: none !important; animation: none !important; }
 }
