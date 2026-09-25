@@ -35,9 +35,24 @@ jobs:
         env:
           SITE_URL: ${{ vars.SITE_URL }}
 
+      # Skips cleanly (rather than failing red) until the Cloudflare
+      # credentials are added to the repository secrets.
+      - name: Check credentials
+        id: cf
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: echo "ready=${{ secrets.CLOUDFLARE_API_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
       - name: Deploy
+        if: steps.cf.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=olimov-inc-website
+
+      - name: Credentials missing
+        if: steps.cf.outputs.ready != 'true'
+        run: |
+          echo "::notice::Build succeeded. Add CLOUDFLARE_API_TOKEN and \
+          CLOUDFLARE_ACCOUNT_ID to the repository secrets to publish."
